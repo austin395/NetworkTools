@@ -3,10 +3,8 @@ __author__ = 'austin'
 import tkinter as tk
 import nmap
 import tkinter.messagebox
-from tkinter import ttk
 import time
 from netaddr import *
-import json
 import dataset
 
 class NetScanner:
@@ -20,8 +18,8 @@ class NetScanner:
         self.scan_results_hostname = 'n/a'
         self.scan_results_mac = 'n/a'
         self.scan_results_ports = 'n/a'
-        self.results_db = dataset.connect('sqlite:///results.db')
-        self.results_table = self.results_db['default']
+        #self.results_db = dataset.connect('sqlite:///results.db')
+        #self.results_table = self.results_db['default']
         self.nma = nmap.PortScannerAsync()
 
         self.root = tk.Tk()
@@ -87,22 +85,28 @@ class NetScanner:
         self.Ports_info = tk.Label(root, text="ports \t\t: %s" % 'N/A')
         self.Ports_info.grid(row=4, column=1, sticky=tk.W)
 
-        # Right click menu on directory list
-        self.right_click_menu = tk.Menu(self.root, tearoff=0)  # Creates the right click menu in directory list
+    def callback_result(self, host, scan_result):
+        db_state = scan_result['scan'][host]['status']['state']
+        db_vendor = scan_result['scan'][host]['vendor']
+        db_hostname = scan_result['scan'][host]['hostname']
+        db_ports = scan_result['scan'][host]['tcp']
+        print(host)
+        print(scan_result)
+        print(db_state)
+        print(db_vendor)
+        print(db_hostname)
+        print(db_ports)
+
+        #self.results_table.insert(dict(IP=host,
+        #                               results=scan_result))
 
     def network_scan(self, network_address):
-
-        def callback_result(host, scan_result):
-            print(host)
-            self.results_table.insert(dict(IP='none',
-                                           hostname='none'))
-
         self.ip_list.delete(0, tk.END)
         scan_list = list(IPNetwork(network_address))
 
         start_time = time.time()  # FOR TESTING ... start time
         for i in scan_list:
-            self.nma.scan(hosts=str(i), callback=callback_result)
+            self.nma.scan(hosts=str(i), callback=self.callback_result)
             time.sleep(.15)
         while self.nma.still_scanning():
             print('waiting >>>')

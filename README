@@ -6,3 +6,8 @@ netscanner2:
 adding asyncronous scanning to speed up the scan times
 revamping the GUI and including more information from the scan
 adding proper error handling
+
+linux users:
+sudo apt-get install nmap python-nmap python-dev python3-pip git
+sudo pip3 install dataset
+
