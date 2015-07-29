@@ -62,7 +62,7 @@ class DrawGui():
             ("About",
             """
             Nmapui
-            by: Neo
+            by: A
             """))
 
         # code entry

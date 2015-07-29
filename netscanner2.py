@@ -58,7 +58,7 @@ class NetScanner:
             ("About",
             """
             Nmapui
-            by: austin
+            by: A
             """))
 
         # code entry

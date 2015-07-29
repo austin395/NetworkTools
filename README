@@ -1,0 +1,8 @@
+nmapui:
+this version is a functional baseline. however will be obsolete after the netscanner2 is completed.
+non-asycronous scanning results in slow scan times.
+
+netscanner2:
+adding asyncronous scanning to speed up the scan times
+revamping the GUI and including more information from the scan
+adding proper error handling
