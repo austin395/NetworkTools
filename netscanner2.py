@@ -95,8 +95,7 @@ class NetScanner:
         def callback_result(host, scan_result):
             print(host)
             self.results_table.insert(dict(IP='none',
-                                           hostname='none'
-                                             ))
+                                           hostname='none'))
 
         self.ip_list.delete(0, tk.END)
         scan_list = list(IPNetwork(network_address))
