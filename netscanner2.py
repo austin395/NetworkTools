@@ -1,15 +1,42 @@
 __author__ = 'austin'
 
+def module_check_r(module):
+    """
+    Just for debian-based systems like Kali and Ubuntu
+    """
+    ri = tk.messagebox.askyesno("error",
+                                """%s was not found on your system if your an admin and would like to install it
+                                press yes""" % module)
+    if ri is True:
+        if module == 'nmap':
+            os.system('gksu apt-get install nmap python-nmap')
+        else:
+            os.system('gksu pip3 install %s' % module)
+    else:
+        tk.messagebox.showerror('missing dependencies',
+                                'netscanner is closing due to a missing dependency')
+        exit(0)
+
+import os
 import tkinter as tk
-import nmap
 import tkinter.messagebox
 import time
-from netaddr import *
-import dataset
+
+try:
+    from netaddr import *
+except ImportError:
+    module_check_r('netaddr')
+    from netaddr import *
+
+try:
+    import nmap
+except:
+    module_check_r('nmap')
+    import nmap
 
 class NetScanner:
     """
-    a simple NMAP network scanner
+    a simple network scanner using nmap bindings
     """
 
     def __init__(self):
@@ -18,10 +45,9 @@ class NetScanner:
         self.scan_results_hostname = 'n/a'
         self.scan_results_mac = 'n/a'
         self.scan_results_ports = 'n/a'
-        #self.results_db = dataset.connect('sqlite:///results.db')
-        #self.results_table = self.results_db['default']
-        self.nma = nmap.PortScannerAsync()
 
+        self.nma = nmap.PortScannerAsync()
+        self.nm = nmap.PortScanner()
         self.root = tk.Tk()
         self.entry_string = tk.StringVar()
         self.dir_checkbutton_state = tk.IntVar()
@@ -86,21 +112,11 @@ class NetScanner:
         self.Ports_info.grid(row=4, column=1, sticky=tk.W)
 
     def callback_result(self, host, scan_result):
-        db_state = scan_result['scan'][host]['status']['state']
-        db_vendor = scan_result['scan'][host]['vendor']
-        db_hostname = scan_result['scan'][host]['hostname']
-        db_ports = scan_result['scan'][host]['tcp']
-        print(host)
-        print(scan_result)
-        print(db_state)
-        print(db_vendor)
-        print(db_hostname)
-        print(db_ports)
-
-        #self.results_table.insert(dict(IP=host,
-        #                               results=scan_result))
+        self.scan_results.append((host, scan_result))
+        print(self.scan_results)  # testing...
 
     def network_scan(self, network_address):
+        self.scan_results = []
         self.ip_list.delete(0, tk.END)
         scan_list = list(IPNetwork(network_address))
 
@@ -111,9 +127,11 @@ class NetScanner:
         while self.nma.still_scanning():
             print('waiting >>>')
             self.nma.wait(2)
+
         end_time = time.time()
 
         print("{} addresses scanned in {} seconds".format(len(scan_list), end_time - start_time))
+        print(self.scan_results)  # TODO this remains an empty list after the scan finishes, why?
 
     def show_host_info(self):
         # get relevant data
