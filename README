@@ -1,9 +1,12 @@
-nmapui:
-this version is a functional baseline. however will be obsolete after the netscanner2 is completed.
-non-asycronous scanning results in slow scan times.
 
 netscanner2:
-adding asyncronous scanning to speed up the scan times
-revamping the GUI and including more information from the scan
-adding proper error handling
-currently only works on linux based systems
+a simple network scanner built in python.
+
+
+todo
+add different scan functions via nmap options and scapy
+add exporting to csv and possibly xml
+clean output when exporting to file
+add docs on the results format for people who wish to import results into other python functions.
+
+
